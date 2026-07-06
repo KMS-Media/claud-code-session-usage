@@ -202,14 +202,19 @@ def main():
         f"Week {bar(w_pct)} {w_pct:.0f}% (↻{w_reset})",
     ]
 
-    # optional: extra-usage credits (EUR), only if enabled
+    # optional: extra-usage credits, only if enabled
     extra = usage.get("extra_usage") or {}
     if extra.get("is_enabled"):
-        ep = extra.get("utilization", 0)
-        used = extra.get("used_credits", 0)
-        lim = extra.get("monthly_limit", 0)
+        ep = extra.get("utilization") or 0
         cur = extra.get("currency", "")
-        parts.append(f"Extra {ep:.0f}% ({used:.0f}/{lim} {cur})")
+        spend = usage.get("spend") or {}
+        used_spend = spend.get("used") or {}
+        limit_spend = spend.get("limit") or {}
+        exponent = used_spend.get("exponent") or 0
+        divisor = 10 ** exponent if exponent else 1
+        used = (used_spend.get("amount_minor") or extra.get("used_credits") or 0) / divisor
+        lim = (limit_spend.get("amount_minor") or extra.get("monthly_limit") or 0) / divisor
+        parts.append(f"Extra {ep:.0f}% ({used:.2f}/{lim:.2f} {cur})")
 
     print("  │  ".join(parts))
 
