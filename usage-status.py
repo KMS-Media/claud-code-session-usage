@@ -191,8 +191,8 @@ def main():
     five = usage.get("five_hour") or {}
     seven = usage.get("seven_day") or {}
 
-    s_pct = five.get("utilization", 0)
-    w_pct = seven.get("utilization", 0)
+    s_pct = five.get("utilization") or 0
+    w_pct = seven.get("utilization") or 0
     s_reset = fmt_reset(five.get("resets_at", ""))
     w_reset = fmt_reset(seven.get("resets_at", ""))
 
