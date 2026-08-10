@@ -1,5 +1,7 @@
 # usage-status.py — Claude Code Status Line
 
+[![CI](https://github.com/KMS-Media/claud-code-session-usage/actions/workflows/ci.yml/badge.svg)](https://github.com/KMS-Media/claud-code-session-usage/actions/workflows/ci.yml)
+
 Shows at a glance in the Claude Code status line:
 
 - **Agent · Model** (e.g. `claude · Sonnet 5`)
@@ -73,3 +75,17 @@ The script reads an `agent` field from `~/.claude/settings.json` (default: `clau
 - **Reset the cache**: cached values live in `~/.claude/scripts/.usage-cache.json`. The file can be deleted if needed and will be recreated automatically.
 
 - **Wrong model shown**: the script reads the most recently used model from the newest transcript file under `~/.claude/projects/**/*.jsonl`. With multiple parallel sessions, the most recently active one is always shown.
+
+## Testing
+
+The test suite mocks every external boundary (macOS Keychain via `subprocess`,
+the Anthropic usage API via `urllib`) — no real network call, no real Keychain
+access, runs on any OS.
+
+```bash
+pip install -r requirements-dev.txt
+pytest --cov --cov-report=term-missing
+```
+
+CI runs the suite on Python 3.10–3.14 on every push/PR and fails the build if
+coverage drops below 90%.
