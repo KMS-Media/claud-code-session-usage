@@ -53,17 +53,16 @@ def get_settings():
 
 
 def fmt_reset(iso_str):
-    """Format an ISO reset timestamp into local 'HH:MM' or 'DD.MM.' if far off."""
+    """Format an ISO reset timestamp into local 'HH:MM', or 'Ddd HH:MM' if not today."""
     try:
         dt = datetime.fromisoformat(iso_str.replace("Z", "+00:00"))
         local = dt.astimezone()  # convert to system local timezone
         now = datetime.now(timezone.utc).astimezone()
-        delta = local - now
-        if delta.total_seconds() < 0:
+        if local < now:
             return "now"
-        if delta.total_seconds() < 24 * 3600:
+        if local.date() == now.date():
             return local.strftime("%H:%M")
-        return local.strftime("%d.%m. %H:%M")
+        return local.strftime("%a %H:%M")
     except (ValueError, AttributeError):
         return "?"
 
