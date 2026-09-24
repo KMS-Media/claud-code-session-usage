@@ -48,10 +48,11 @@ def test_fmt_reset_past_is_now(usage_status):
     assert usage_status.fmt_reset(dt) == "now"
 
 
-def test_fmt_reset_far_future_includes_date(usage_status):
+def test_fmt_reset_different_day_includes_weekday(usage_status):
     dt = (datetime.now(timezone.utc) + timedelta(days=3)).isoformat().replace("+00:00", "Z")
     result = usage_status.fmt_reset(dt)
-    assert "." in result  # "DD.MM. HH:MM"
+    assert " " in result and ":" in result  # "Ddd HH:MM"
+    assert result.split(" ")[0].isalpha()  # abbreviated weekday, not a date
 
 
 def test_fmt_reset_malformed_string(usage_status):
